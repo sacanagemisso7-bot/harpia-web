@@ -6,6 +6,7 @@ import { Interaction, InteractionType } from '../../core/models/interaction.mode
 import { Investor } from '../../core/models/investor.model';
 import { InteractionService } from '../../core/services/interaction.service';
 import { InvestorService } from '../../core/services/investor.service';
+import { extractError } from '../../shared/utils/http-error';
 
 interface InteractionForm {
   investorId: string;
@@ -288,9 +289,9 @@ export class InteractionsComponent implements OnInit {
         this.closeModal();
         this.reload();
       },
-      error: () => {
+      error: (err) => {
         this.saving.set(false);
-        this.saveError.set('Não foi possível salvar. Verifique os dados e tente novamente.');
+        this.saveError.set(extractError(err));
       },
     });
   }

@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Investor, InvestorStatus } from '../../core/models/investor.model';
 import { InvestorService } from '../../core/services/investor.service';
+import { extractError, isEmailValid } from '../../shared/utils/http-error';
 
 interface InvestorForm {
   name: string;
@@ -121,6 +122,9 @@ interface InvestorForm {
                   [(ngModel)]="form.email"
                   class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
                 />
+                @if (emailInvalid()) {
+                  <p class="mt-1 text-xs text-red-600">Email inválido</p>
+                }
               </div>
               <div>
                 <label class="mb-1 block text-sm font-medium text-ink">Telefone</label>
@@ -181,7 +185,7 @@ interface InvestorForm {
               </button>
               <button
                 type="submit"
-                [disabled]="!form.name.trim() || saving()"
+                [disabled]="!form.name.trim() || emailInvalid() || saving()"
                 class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {{ saving() ? 'Salvando...' : 'Salvar' }}
@@ -249,8 +253,13 @@ export class InvestorsComponent implements OnInit {
     this.modalOpen.set(false);
   }
 
+  emailInvalid(): boolean {
+    const email = this.form.email.trim();
+    return email.length > 0 && !isEmailValid(email);
+  }
+
   save(): void {
-    if (!this.form.name.trim() || this.saving()) {
+    if (!this.form.name.trim() || this.emailInvalid() || this.saving()) {
       return;
     }
     this.saving.set(true);
@@ -268,9 +277,9 @@ export class InvestorsComponent implements OnInit {
         this.closeModal();
         this.reload();
       },
-      error: () => {
+      error: (err) => {
         this.saving.set(false);
-        this.saveError.set('Não foi possível salvar. Verifique os dados e tente novamente.');
+        this.saveError.set(extractError(err));
       },
     });
   }

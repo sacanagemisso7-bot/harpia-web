@@ -12,6 +12,7 @@ import { DocumentService } from '../../core/services/document.service';
 import { InteractionService } from '../../core/services/interaction.service';
 import { InvestmentService } from '../../core/services/investment.service';
 import { InvestorService } from '../../core/services/investor.service';
+import { extractError, isEmailValid } from '../../shared/utils/http-error';
 
 @Component({
   selector: 'app-investor-detail',
@@ -277,6 +278,9 @@ import { InvestorService } from '../../core/services/investor.service';
                   [(ngModel)]="editForm.email"
                   class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
                 />
+                @if (editEmailInvalid()) {
+                  <p class="mt-1 text-xs text-red-600">Email inválido</p>
+                }
               </div>
               <div>
                 <label class="mb-1 block text-sm font-medium text-ink">Telefone</label>
@@ -337,7 +341,7 @@ import { InvestorService } from '../../core/services/investor.service';
               </button>
               <button
                 type="submit"
-                [disabled]="!editForm.name.trim() || savingEdit()"
+                [disabled]="!editForm.name.trim() || editEmailInvalid() || savingEdit()"
                 class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {{ savingEdit() ? 'Salvando...' : 'Salvar' }}
@@ -480,8 +484,13 @@ export class InvestorDetailComponent implements OnInit {
     this.editOpen.set(false);
   }
 
+  editEmailInvalid(): boolean {
+    const email = this.editForm.email.trim();
+    return email.length > 0 && !isEmailValid(email);
+  }
+
   saveEdit(): void {
-    if (!this.editForm.name.trim() || this.savingEdit()) {
+    if (!this.editForm.name.trim() || this.editEmailInvalid() || this.savingEdit()) {
       return;
     }
     this.savingEdit.set(true);
@@ -504,9 +513,9 @@ export class InvestorDetailComponent implements OnInit {
         this.investor.set(updated);
         this.closeEdit();
       },
-      error: () => {
+      error: (err) => {
         this.savingEdit.set(false);
-        this.saveEditError.set('Não foi possível salvar. Tente novamente.');
+        this.saveEditError.set(extractError(err));
       },
     });
   }
@@ -524,7 +533,15 @@ export class InvestorDetailComponent implements OnInit {
   }
 
   onFileSelected(event: Event): void {
-    this.selectedFile = (event.target as HTMLInputElement).files?.[0] ?? null;
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    const maxBytes = 25 * 1024 * 1024;
+    if (file && file.size > maxBytes) {
+      this.selectedFile = null;
+      this.uploadError.set('Arquivo muito grande. Máximo 25MB.');
+      return;
+    }
+    this.uploadError.set('');
+    this.selectedFile = file;
   }
 
   upload(): void {
@@ -546,9 +563,9 @@ export class InvestorDetailComponent implements OnInit {
         this.closeUpload();
         this.reloadDocuments();
       },
-      error: () => {
+      error: (err) => {
         this.uploading.set(false);
-        this.uploadError.set('Não foi possível enviar o documento. Tente novamente.');
+        this.uploadError.set(extractError(err, 'Não foi possível enviar o documento. Tente novamente.'));
       },
     });
   }

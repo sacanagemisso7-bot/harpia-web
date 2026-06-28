@@ -8,6 +8,8 @@ import { Project } from '../../core/models/project.model';
 import { InvestmentService } from '../../core/services/investment.service';
 import { InvestorService } from '../../core/services/investor.service';
 import { ProjectService } from '../../core/services/project.service';
+import { CurrencyMaskDirective } from '../../shared/directives/currency-mask.directive';
+import { extractError } from '../../shared/utils/http-error';
 
 interface InvestmentForm {
   investorId: string;
@@ -21,7 +23,7 @@ interface InvestmentForm {
 @Component({
   selector: 'app-investments',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CurrencyMaskDirective],
   template: `
     <div class="mb-6 flex items-center justify-between">
       <h1 class="text-2xl font-bold text-ink">Aportes</h1>
@@ -146,11 +148,12 @@ interface InvestmentForm {
               <div>
                 <label class="mb-1 block text-sm font-medium text-ink">Valor (R$) *</label>
                 <input
-                  type="number"
+                  type="text"
                   name="amount"
+                  appCurrencyMask
                   [(ngModel)]="form.amount"
-                  min="0"
-                  step="0.01"
+                  inputmode="numeric"
+                  placeholder="R$ 0,00"
                   class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
                 />
               </div>
@@ -344,9 +347,9 @@ export class InvestmentsComponent implements OnInit {
         this.closeModal();
         this.reload();
       },
-      error: () => {
+      error: (err) => {
         this.saving.set(false);
-        this.saveError.set('Não foi possível salvar. Verifique os dados e tente novamente.');
+        this.saveError.set(extractError(err));
       },
     });
   }
