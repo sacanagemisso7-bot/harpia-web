@@ -1,10 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { Document, DocumentCategory } from '../../core/models/document.model';
 import { Investment, InvestmentType } from '../../core/models/investment.model';
 import { Interaction, InteractionType } from '../../core/models/interaction.model';
 import { Investor, InvestorStatus } from '../../core/models/investor.model';
+import { DocumentService } from '../../core/services/document.service';
 import { InteractionService } from '../../core/services/interaction.service';
 import { InvestmentService } from '../../core/services/investment.service';
 import { InvestorService } from '../../core/services/investor.service';
@@ -12,7 +16,7 @@ import { InvestorService } from '../../core/services/investor.service';
 @Component({
   selector: 'app-investor-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <a
       routerLink="/investors"
@@ -117,7 +121,126 @@ import { InvestorService } from '../../core/services/investor.service';
           }
         </section>
       </div>
+
+      <!-- Documentos -->
+      <section class="mt-8">
+        <div class="mb-3 flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-ink">
+            Documentos <span class="text-sm font-normal text-muted">({{ documents().length }})</span>
+          </h2>
+          <button
+            type="button"
+            (click)="openUpload()"
+            class="rounded bg-primary px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
+          >
+            + Enviar Documento
+          </button>
+        </div>
+
+        @if (documents().length === 0) {
+          <div class="rounded-lg border border-border bg-white p-5 text-sm text-muted">
+            Nenhum documento anexado
+          </div>
+        } @else {
+          <div class="divide-y divide-border rounded-lg border border-border bg-white">
+            @for (doc of documents(); track doc.id) {
+              <div class="flex items-center justify-between gap-4 p-4">
+                <div class="flex min-w-0 items-center gap-3">
+                  <span class="text-xl">📄</span>
+                  <div class="min-w-0">
+                    <p class="truncate font-medium text-ink">{{ doc.name }}</p>
+                    <span class="rounded px-2 py-0.5 text-xs font-medium" [ngClass]="categoryClass(doc.category)">
+                      {{ categoryLabel(doc.category) }}
+                    </span>
+                  </div>
+                </div>
+                <div class="flex shrink-0 items-center gap-3">
+                  <a
+                    [href]="getFileUrl(doc)"
+                    target="_blank"
+                    rel="noopener"
+                    class="text-sm font-medium text-primary hover:underline"
+                  >
+                    Baixar
+                  </a>
+                  <button
+                    type="button"
+                    (click)="removeDocument(doc)"
+                    class="text-sm font-medium text-red-600 hover:underline"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
       }
+    }
+
+    <!-- Modal: Enviar Documento -->
+    @if (uploadOpen()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closeUpload()">
+        <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+          <h2 class="mb-4 text-lg font-semibold text-ink">Enviar Documento</h2>
+
+          <form (ngSubmit)="upload()" class="space-y-4">
+            <div>
+              <label class="mb-1 block text-sm font-medium text-ink">Nome *</label>
+              <input
+                type="text"
+                name="docName"
+                [(ngModel)]="docName"
+                class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+            </div>
+
+            <div>
+              <label class="mb-1 block text-sm font-medium text-ink">Categoria</label>
+              <select
+                name="docCategory"
+                [(ngModel)]="docCategory"
+                class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                @for (opt of categoryOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </div>
+
+            <div>
+              <label class="mb-1 block text-sm font-medium text-ink">Arquivo *</label>
+              <input
+                type="file"
+                (change)="onFileSelected($event)"
+                class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary file:mr-3 file:rounded file:border-0 file:bg-surface file:px-3 file:py-1 file:text-sm file:text-ink"
+              />
+            </div>
+
+            @if (uploadError()) {
+              <p class="text-sm text-red-600">{{ uploadError() }}</p>
+            }
+
+            <div class="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                (click)="closeUpload()"
+                class="rounded border border-border px-4 py-2 text-sm font-medium text-ink hover:bg-surface"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                [disabled]="!docName.trim() || !selectedFile || uploading()"
+                class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {{ uploading() ? 'Enviando...' : 'Enviar' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     }
   `,
 })
@@ -126,12 +249,41 @@ export class InvestorDetailComponent implements OnInit {
   private readonly investorService = inject(InvestorService);
   private readonly investmentService = inject(InvestmentService);
   private readonly interactionService = inject(InteractionService);
+  private readonly documentService = inject(DocumentService);
+
+  private investorId = '';
 
   readonly investor = signal<Investor | null>(null);
   readonly investments = signal<Investment[]>([]);
   readonly interactions = signal<Interaction[]>([]);
+  readonly documents = signal<Document[]>([]);
   readonly loading = signal(true);
   readonly error = signal('');
+
+  readonly uploadOpen = signal(false);
+  readonly uploading = signal(false);
+  readonly uploadError = signal('');
+  docName = '';
+  docCategory: DocumentCategory = 'OUTRO';
+  selectedFile: File | null = null;
+
+  readonly categoryOptions: { value: DocumentCategory; label: string }[] = [
+    { value: 'CONTRATO', label: 'Contrato' },
+    { value: 'COMPROVANTE', label: 'Comprovante' },
+    { value: 'OUTRO', label: 'Outro' },
+  ];
+
+  private readonly categoryLabels: Record<DocumentCategory, string> = {
+    CONTRATO: 'Contrato',
+    COMPROVANTE: 'Comprovante',
+    OUTRO: 'Outro',
+  };
+
+  private readonly categoryClasses: Record<DocumentCategory, string> = {
+    CONTRATO: 'bg-blue-100 text-blue-700',
+    COMPROVANTE: 'bg-primary/10 text-primary',
+    OUTRO: 'bg-gray-100 text-gray-700',
+  };
 
   readonly totalInvested = computed(() =>
     this.investments().reduce((sum, i) => sum + i.amount, 0),
@@ -170,18 +322,21 @@ export class InvestorDetailComponent implements OnInit {
       this.loading.set(false);
       return;
     }
+    this.investorId = id;
 
     forkJoin({
       investor: this.investorService.getById(id),
       investments: this.investmentService.list(id),
       interactions: this.interactionService.list(id),
+      documents: this.documentService.list(id),
     }).subscribe({
-      next: ({ investor, investments, interactions }) => {
+      next: ({ investor, investments, interactions, documents }) => {
         this.investor.set(investor);
         this.investments.set(investments);
         this.interactions.set(
           [...interactions].sort((a, b) => +new Date(b.date) - +new Date(a.date)),
         );
+        this.documents.set(documents);
         this.loading.set(false);
       },
       error: () => {
@@ -189,6 +344,72 @@ export class InvestorDetailComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  openUpload(): void {
+    this.docName = '';
+    this.docCategory = 'OUTRO';
+    this.selectedFile = null;
+    this.uploadError.set('');
+    this.uploadOpen.set(true);
+  }
+
+  closeUpload(): void {
+    this.uploadOpen.set(false);
+  }
+
+  onFileSelected(event: Event): void {
+    this.selectedFile = (event.target as HTMLInputElement).files?.[0] ?? null;
+  }
+
+  upload(): void {
+    if (!this.docName.trim() || !this.selectedFile || this.uploading()) {
+      return;
+    }
+    this.uploading.set(true);
+    this.uploadError.set('');
+
+    const formData = new FormData();
+    formData.append('name', this.docName.trim());
+    formData.append('category', this.docCategory);
+    formData.append('investorId', this.investorId);
+    formData.append('file', this.selectedFile);
+
+    this.documentService.upload(formData).subscribe({
+      next: () => {
+        this.uploading.set(false);
+        this.closeUpload();
+        this.reloadDocuments();
+      },
+      error: () => {
+        this.uploading.set(false);
+        this.uploadError.set('Não foi possível enviar o documento. Tente novamente.');
+      },
+    });
+  }
+
+  removeDocument(doc: Document): void {
+    this.documentService.remove(doc.id).subscribe({
+      next: () => this.reloadDocuments(),
+    });
+  }
+
+  private reloadDocuments(): void {
+    this.documentService.list(this.investorId).subscribe({
+      next: (docs) => this.documents.set(docs),
+    });
+  }
+
+  getFileUrl(doc: Document): string {
+    return `${environment.apiUrl}/${doc.fileUrl}`;
+  }
+
+  categoryLabel(category: DocumentCategory): string {
+    return this.categoryLabels[category] ?? category;
+  }
+
+  categoryClass(category: DocumentCategory): string {
+    return this.categoryClasses[category] ?? this.categoryClasses.OUTRO;
   }
 
   formatBRL(value: number): string {
