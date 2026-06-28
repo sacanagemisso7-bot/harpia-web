@@ -38,6 +38,13 @@ import { InvestorService } from '../../core/services/investor.service';
           <span class="rounded px-2 py-0.5 text-xs font-medium" [ngClass]="statusClass(inv.status)">
             {{ inv.status }}
           </span>
+          <button
+            type="button"
+            (click)="openEdit(inv)"
+            class="ml-auto rounded border border-border px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface"
+          >
+            Editar
+          </button>
         </div>
         <div class="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted">
           <span>📧 {{ inv.email || '—' }}</span>
@@ -242,6 +249,104 @@ import { InvestorService } from '../../core/services/investor.service';
         </div>
       </div>
     }
+
+    <!-- Modal: Editar Investidor -->
+    @if (editOpen()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closeEdit()">
+        <div class="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+          <h2 class="mb-4 text-lg font-semibold text-ink">Editar Investidor</h2>
+
+          <form (ngSubmit)="saveEdit()" class="space-y-4">
+            <div>
+              <label class="mb-1 block text-sm font-medium text-ink">Nome *</label>
+              <input
+                type="text"
+                name="editName"
+                [(ngModel)]="editForm.name"
+                required
+                class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label class="mb-1 block text-sm font-medium text-ink">Email</label>
+                <input
+                  type="email"
+                  name="editEmail"
+                  [(ngModel)]="editForm.email"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label class="mb-1 block text-sm font-medium text-ink">Telefone</label>
+                <input
+                  type="text"
+                  name="editPhone"
+                  [(ngModel)]="editForm.phone"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label class="mb-1 block text-sm font-medium text-ink">Status</label>
+                <select
+                  name="editStatus"
+                  [(ngModel)]="editForm.status"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+                >
+                  <option value="ATIVO">Ativo</option>
+                  <option value="PROSPECTO">Prospecto</option>
+                  <option value="INATIVO">Inativo</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-1 block text-sm font-medium text-ink">Data de Entrada</label>
+                <input
+                  type="date"
+                  name="editEntryDate"
+                  [(ngModel)]="editForm.entryDate"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="mb-1 block text-sm font-medium text-ink">Observações</label>
+              <textarea
+                name="editNotes"
+                [(ngModel)]="editForm.notes"
+                rows="3"
+                class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+              ></textarea>
+            </div>
+
+            @if (saveEditError()) {
+              <p class="text-sm text-red-600">{{ saveEditError() }}</p>
+            }
+
+            <div class="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                (click)="closeEdit()"
+                class="rounded border border-border px-4 py-2 text-sm font-medium text-ink hover:bg-surface"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                [disabled]="!editForm.name.trim() || savingEdit()"
+                class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {{ savingEdit() ? 'Salvando...' : 'Salvar' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
   `,
 })
 export class InvestorDetailComponent implements OnInit {
@@ -266,6 +371,18 @@ export class InvestorDetailComponent implements OnInit {
   docName = '';
   docCategory: DocumentCategory = 'OUTRO';
   selectedFile: File | null = null;
+
+  readonly editOpen = signal(false);
+  readonly savingEdit = signal(false);
+  readonly saveEditError = signal('');
+  editForm: {
+    name: string;
+    email: string;
+    phone: string;
+    status: InvestorStatus;
+    entryDate: string;
+    notes: string;
+  } = { name: '', email: '', phone: '', status: 'PROSPECTO', entryDate: '', notes: '' };
 
   readonly categoryOptions: { value: DocumentCategory; label: string }[] = [
     { value: 'CONTRATO', label: 'Contrato' },
@@ -342,6 +459,54 @@ export class InvestorDetailComponent implements OnInit {
       error: () => {
         this.error.set('Não foi possível carregar os dados do investidor.');
         this.loading.set(false);
+      },
+    });
+  }
+
+  openEdit(inv: Investor): void {
+    this.editForm = {
+      name: inv.name,
+      email: inv.email ?? '',
+      phone: inv.phone ?? '',
+      status: inv.status,
+      entryDate: inv.entryDate ? inv.entryDate.slice(0, 10) : '',
+      notes: inv.notes ?? '',
+    };
+    this.saveEditError.set('');
+    this.editOpen.set(true);
+  }
+
+  closeEdit(): void {
+    this.editOpen.set(false);
+  }
+
+  saveEdit(): void {
+    if (!this.editForm.name.trim() || this.savingEdit()) {
+      return;
+    }
+    this.savingEdit.set(true);
+    this.saveEditError.set('');
+
+    const payload: Partial<Investor> = {
+      name: this.editForm.name.trim(),
+      email: this.editForm.email.trim() || undefined,
+      phone: this.editForm.phone.trim() || undefined,
+      status: this.editForm.status,
+      entryDate: this.editForm.entryDate
+        ? new Date(this.editForm.entryDate).toISOString()
+        : undefined,
+      notes: this.editForm.notes.trim() || undefined,
+    };
+
+    this.investorService.update(this.investorId, payload).subscribe({
+      next: (updated) => {
+        this.savingEdit.set(false);
+        this.investor.set(updated);
+        this.closeEdit();
+      },
+      error: () => {
+        this.savingEdit.set(false);
+        this.saveEditError.set('Não foi possível salvar. Tente novamente.');
       },
     });
   }
