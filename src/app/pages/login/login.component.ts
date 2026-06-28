@@ -9,9 +9,9 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [ReactiveFormsModule],
   template: `
     <div class="flex min-h-screen items-center justify-center bg-surface px-4">
-      <div class="w-full max-w-[400px] rounded-lg bg-white p-8 shadow-md">
+      <div class="w-full max-w-[400px] rounded-lg border border-border bg-white p-8 shadow-sm">
         <div class="mb-8 text-center">
-          <h1 class="text-4xl font-bold text-accent">Harpia</h1>
+          <h1 class="text-4xl font-bold text-primary">Harpia</h1>
           <p class="mt-1 text-sm text-gray-500">Gestão de Investidores</p>
         </div>
 
@@ -23,7 +23,7 @@ import { AuthService } from '../../core/services/auth.service';
               type="email"
               formControlName="email"
               autocomplete="email"
-              class="w-full rounded border border-gray-300 px-3 py-2 text-ink outline-none transition-colors focus:border-secondary focus:ring-1 focus:ring-secondary"
+              class="w-full rounded border border-border px-3 py-2 text-ink outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder="seu@email.com"
             />
             @if (isInvalid('email')) {
@@ -44,7 +44,7 @@ import { AuthService } from '../../core/services/auth.service';
               type="password"
               formControlName="password"
               autocomplete="current-password"
-              class="w-full rounded border border-gray-300 px-3 py-2 text-ink outline-none transition-colors focus:border-secondary focus:ring-1 focus:ring-secondary"
+              class="w-full rounded border border-border px-3 py-2 text-ink outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder="••••••"
             />
             @if (isInvalid('password')) {
@@ -65,7 +65,7 @@ import { AuthService } from '../../core/services/auth.service';
           <button
             type="submit"
             [disabled]="form.invalid || loading()"
-            class="w-full rounded bg-primary py-2.5 font-medium text-white transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60"
+            class="w-full rounded bg-primary py-2.5 font-medium text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
           >
             {{ loading() ? 'Entrando...' : 'Entrar' }}
           </button>

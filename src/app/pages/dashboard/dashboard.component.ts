@@ -9,7 +9,7 @@ import { InteractionType } from '../../core/models/interaction.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <h1 class="mb-6 text-2xl font-bold text-primary">Dashboard</h1>
+    <h1 class="mb-6 text-2xl font-bold text-ink">Dashboard</h1>
 
     @if (loading()) {
       <p class="text-sm text-gray-500">Carregando...</p>
@@ -21,19 +21,19 @@ import { InteractionType } from '../../core/models/interaction.model';
       @if (data(); as d) {
       <!-- Cards -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="relative rounded-lg bg-white p-5 shadow-sm">
+        <div class="relative rounded-lg border border-border bg-white p-5 shadow-sm">
           <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Total Captado</p>
-          <p class="mt-2 text-2xl font-bold text-secondary">{{ formatBRL(d.totalCaptado) }}</p>
+          <p class="mt-2 text-2xl font-bold text-primary">{{ formatBRL(d.totalCaptado) }}</p>
           <span class="absolute right-4 top-4 text-2xl">💰</span>
         </div>
 
-        <div class="relative rounded-lg bg-white p-5 shadow-sm">
+        <div class="relative rounded-lg border border-border bg-white p-5 shadow-sm">
           <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Investidores Ativos</p>
           <p class="mt-2 text-2xl font-bold text-ink">{{ d.totalInvestidores }}</p>
           <span class="absolute right-4 top-4 text-2xl">👥</span>
         </div>
 
-        <div class="relative rounded-lg bg-white p-5 shadow-sm">
+        <div class="relative rounded-lg border border-border bg-white p-5 shadow-sm">
           <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Retornos Pendentes</p>
           <p class="mt-2 text-2xl font-bold text-ink">{{ d.retornosPendentes.count }}</p>
           <p class="text-sm text-gray-500">{{ formatBRL(d.retornosPendentes.valor) }}</p>
@@ -41,7 +41,7 @@ import { InteractionType } from '../../core/models/interaction.model';
         </div>
 
         <div
-          class="relative rounded-lg bg-white p-5 shadow-sm"
+          class="relative rounded-lg border border-border bg-white p-5 shadow-sm"
           [class.ring-1]="d.retornosAtrasados.count > 0"
           [class.ring-red-200]="d.retornosAtrasados.count > 0"
         >
@@ -68,11 +68,11 @@ import { InteractionType } from '../../core/models/interaction.model';
       <section class="mt-8">
         <h2 class="mb-3 text-lg font-semibold text-primary">Últimas Interações</h2>
 
-        <div class="rounded-lg bg-white shadow-sm">
+        <div class="rounded-lg border border-border bg-white shadow-sm">
           @if (d.ultimasInteracoes.length === 0) {
             <p class="p-5 text-sm text-gray-500">Nenhuma interação registrada</p>
           } @else {
-            <ul class="divide-y divide-gray-100">
+            <ul class="divide-y divide-border">
               @for (it of d.ultimasInteracoes; track it.id) {
                 <li class="flex items-start justify-between gap-4 p-4">
                   <div class="min-w-0">

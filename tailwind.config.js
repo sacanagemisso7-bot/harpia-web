@@ -4,11 +4,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#1A3A5C',
-        secondary: '#2E6DA4',
-        accent: '#C8A951',
-        surface: '#F5F7FA',
-        ink: '#2C3E50',
+        primary: '#0F766E',
+        'primary-dark': '#0B5A54',
+        accent: '#10B981',
+        surface: '#F8FAFC',
+        border: '#E2E8F0',
+        ink: '#1E293B',
+        muted: '#64748B',
       },
     },
   },

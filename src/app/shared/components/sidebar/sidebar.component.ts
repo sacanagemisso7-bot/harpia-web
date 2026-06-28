@@ -12,17 +12,18 @@ interface NavItem {
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
   template: `
-    <aside class="flex h-screen w-64 flex-col bg-primary text-white">
-      <div class="flex items-center gap-2 px-6 py-6 border-b border-white/10">
-        <span class="text-2xl font-bold tracking-wide text-accent">Harpia</span>
+    <aside class="flex h-screen w-64 flex-col border-r border-border bg-white">
+      <div class="flex items-center gap-2 px-6 py-6">
+        <span class="text-xl">🦅</span>
+        <span class="text-2xl font-bold tracking-tight text-primary">Harpia</span>
       </div>
 
-      <nav class="flex-1 px-3 py-4 space-y-1">
+      <nav class="flex-1 px-3 py-2 space-y-1">
         @for (item of navItems; track item.path) {
           <a
             [routerLink]="item.path"
-            routerLinkActive="bg-white/10 border-l-4 border-accent"
-            class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-200 hover:bg-white/5 transition-colors border-l-4 border-transparent"
+            routerLinkActive="bg-primary/10 text-primary border-l-2 border-primary"
+            class="flex items-center gap-3 rounded-r px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface transition-colors border-l-2 border-transparent"
           >
             <span class="text-base">{{ item.icon }}</span>
             <span>{{ item.label }}</span>
@@ -30,7 +31,7 @@ interface NavItem {
         }
       </nav>
 
-      <div class="px-6 py-4 text-xs text-gray-400 border-t border-white/10">
+      <div class="px-6 py-4 text-xs text-muted border-t border-border">
         Harpia &copy; {{ year }}
       </div>
     </aside>

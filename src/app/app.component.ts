@@ -17,7 +17,7 @@ import { HeaderComponent } from './shared/components/header/header.component';
         <app-sidebar />
         <div class="flex flex-1 flex-col overflow-hidden">
           <app-header />
-          <main class="flex-1 overflow-y-auto bg-surface p-6">
+          <main class="flex-1 overflow-y-auto bg-surface p-8">
             <router-outlet />
           </main>
         </div>

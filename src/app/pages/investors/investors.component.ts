@@ -21,11 +21,11 @@ interface InvestorForm {
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="mb-6 flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-primary">Investidores</h1>
+      <h1 class="text-2xl font-bold text-ink">Investidores</h1>
       <button
         type="button"
         (click)="openModal()"
-        class="rounded bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary"
+        class="rounded bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
       >
         + Novo Investidor
       </button>
@@ -36,7 +36,7 @@ interface InvestorForm {
       <select
         [(ngModel)]="statusFilter"
         (ngModelChange)="reload()"
-        class="rounded border border-gray-300 px-3 py-2 text-sm text-ink outline-none focus:border-secondary"
+        class="rounded border border-border px-3 py-2 text-sm text-ink outline-none focus:border-primary"
       >
         <option value="">Todos os status</option>
         <option value="ATIVO">Ativo</option>
@@ -49,7 +49,7 @@ interface InvestorForm {
         [(ngModel)]="search"
         (ngModelChange)="search$.next($event)"
         placeholder="Buscar por nome..."
-        class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-ink outline-none focus:border-secondary sm:max-w-xs"
+        class="w-full rounded border border-border px-3 py-2 text-sm text-ink outline-none focus:border-primary sm:max-w-xs"
       />
     </div>
 
@@ -63,7 +63,7 @@ interface InvestorForm {
         <p class="p-5 text-sm text-gray-500">Nenhum investidor encontrado</p>
       } @else {
         <table class="w-full text-left text-sm">
-          <thead class="border-b border-gray-200 bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+          <thead class="border-b border-border bg-surface text-xs uppercase tracking-wide text-muted">
             <tr>
               <th class="px-4 py-3 font-medium">Nome</th>
               <th class="px-4 py-3 font-medium">Email</th>
@@ -72,7 +72,7 @@ interface InvestorForm {
               <th class="px-4 py-3 font-medium">Data de Entrada</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-border">
             @for (inv of investors(); track inv.id) {
               <tr
                 [routerLink]="['/investors', inv.id]"
@@ -108,7 +108,7 @@ interface InvestorForm {
                 name="name"
                 [(ngModel)]="form.name"
                 required
-                class="w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-secondary"
+                class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
               />
             </div>
 
@@ -119,7 +119,7 @@ interface InvestorForm {
                   type="email"
                   name="email"
                   [(ngModel)]="form.email"
-                  class="w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-secondary"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
                 />
               </div>
               <div>
@@ -128,7 +128,7 @@ interface InvestorForm {
                   type="text"
                   name="phone"
                   [(ngModel)]="form.phone"
-                  class="w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-secondary"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
                 />
               </div>
             </div>
@@ -139,7 +139,7 @@ interface InvestorForm {
                 <select
                   name="status"
                   [(ngModel)]="form.status"
-                  class="w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-secondary"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
                 >
                   <option value="ATIVO">Ativo</option>
                   <option value="PROSPECTO">Prospecto</option>
@@ -152,7 +152,7 @@ interface InvestorForm {
                   type="date"
                   name="entryDate"
                   [(ngModel)]="form.entryDate"
-                  class="w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-secondary"
+                  class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
                 />
               </div>
             </div>
@@ -163,7 +163,7 @@ interface InvestorForm {
                 name="notes"
                 [(ngModel)]="form.notes"
                 rows="3"
-                class="w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-secondary"
+                class="w-full rounded border border-border px-3 py-2 text-sm outline-none focus:border-primary"
               ></textarea>
             </div>
 
@@ -175,14 +175,14 @@ interface InvestorForm {
               <button
                 type="button"
                 (click)="closeModal()"
-                class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-ink hover:bg-surface"
+                class="rounded border border-border px-4 py-2 text-sm font-medium text-ink hover:bg-surface"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 [disabled]="!form.name.trim() || saving()"
-                class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60"
+                class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {{ saving() ? 'Salvando...' : 'Salvar' }}
               </button>
@@ -212,7 +212,7 @@ export class InvestorsComponent implements OnInit {
   private readonly dateFmt = new Intl.DateTimeFormat('pt-BR');
 
   private readonly badgeClasses: Record<InvestorStatus, string> = {
-    ATIVO: 'bg-green-100 text-green-700',
+    ATIVO: 'bg-primary/10 text-primary',
     PROSPECTO: 'bg-yellow-100 text-yellow-700',
     INATIVO: 'bg-gray-100 text-gray-700',
   };
