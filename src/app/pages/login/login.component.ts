@@ -9,7 +9,7 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [ReactiveFormsModule],
   template: `
     <div class="flex min-h-screen items-center justify-center bg-surface px-4">
-      <div class="w-full max-w-[400px] rounded-lg border border-border bg-white p-8 shadow-sm">
+      <div class="w-full max-w-[400px] rounded-xl border border-border bg-white p-8 shadow-md">
         <div class="mb-8 text-center">
           <h1 class="text-4xl font-bold text-primary">Harpia</h1>
           <p class="mt-1 text-sm text-gray-500">Gestão de Investidores</p>

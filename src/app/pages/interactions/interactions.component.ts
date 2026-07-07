@@ -47,7 +47,7 @@ interface InteractionForm {
     </div>
 
     <!-- Tabela -->
-    <div class="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+    <div class="overflow-hidden rounded-xl border border-border bg-white shadow-md">
       @if (loading()) {
         <p class="p-5 text-sm text-muted">Carregando...</p>
       } @else if (error()) {
@@ -87,7 +87,7 @@ interface InteractionForm {
     <!-- Modal -->
     @if (modalOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closeModal()">
-        <div class="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
           <h2 class="mb-4 text-lg font-semibold text-ink">Nova Interação</h2>
 
           <form (ngSubmit)="save()" class="space-y-4">

@@ -70,13 +70,13 @@ import { extractError, isEmailValid } from '../../shared/utils/http-error';
           </div>
 
           @if (investments().length === 0) {
-            <div class="rounded-lg border border-border bg-white p-5 text-sm text-muted">
+            <div class="rounded-xl border border-border bg-white p-5 text-sm text-muted shadow-sm">
               Nenhum aporte registrado
             </div>
           } @else {
             <div class="space-y-3">
               @for (ap of investments(); track ap.id) {
-                <div class="rounded-lg border border-border bg-white p-4">
+                <div class="rounded-xl border border-border bg-white p-4 shadow-sm">
                   <div class="flex items-center justify-between">
                     <span class="text-lg font-bold text-primary">{{ formatBRL(ap.amount) }}</span>
                     <span class="rounded px-2 py-0.5 text-xs font-medium" [ngClass]="typeClass(ap.type)">
@@ -101,7 +101,7 @@ import { extractError, isEmailValid } from '../../shared/utils/http-error';
           </h2>
 
           @if (interactions().length === 0) {
-            <div class="rounded-lg border border-border bg-white p-5 text-sm text-muted">
+            <div class="rounded-xl border border-border bg-white p-5 text-sm text-muted shadow-sm">
               Nenhuma interação registrada
             </div>
           } @else {
@@ -109,7 +109,7 @@ import { extractError, isEmailValid } from '../../shared/utils/http-error';
               @for (it of interactions(); track it.id) {
                 <li class="relative">
                   <span class="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-primary"></span>
-                  <div class="rounded-lg border border-border bg-white p-4">
+                  <div class="rounded-xl border border-border bg-white p-4 shadow-sm">
                     <div class="flex items-center justify-between">
                       <span class="rounded px-2 py-0.5 text-xs font-medium" [ngClass]="badgeClass(it.type)">
                         {{ it.type }}
@@ -146,11 +146,11 @@ import { extractError, isEmailValid } from '../../shared/utils/http-error';
         </div>
 
         @if (documents().length === 0) {
-          <div class="rounded-lg border border-border bg-white p-5 text-sm text-muted">
+          <div class="rounded-xl border border-border bg-white p-5 text-sm text-muted shadow-sm">
             Nenhum documento anexado
           </div>
         } @else {
-          <div class="divide-y divide-border rounded-lg border border-border bg-white">
+          <div class="divide-y divide-border rounded-xl border border-border bg-white shadow-sm">
             @for (doc of documents(); track doc.id) {
               <div class="flex items-center justify-between gap-4 p-4">
                 <div class="flex min-w-0 items-center gap-3">
@@ -190,7 +190,7 @@ import { extractError, isEmailValid } from '../../shared/utils/http-error';
     <!-- Modal: Enviar Documento -->
     @if (uploadOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closeUpload()">
-        <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+        <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
           <h2 class="mb-4 text-lg font-semibold text-ink">Enviar Documento</h2>
 
           <form (ngSubmit)="upload()" class="space-y-4">
@@ -254,7 +254,7 @@ import { extractError, isEmailValid } from '../../shared/utils/http-error';
     <!-- Modal: Editar Investidor -->
     @if (editOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closeEdit()">
-        <div class="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
           <h2 class="mb-4 text-lg font-semibold text-ink">Editar Investidor</h2>
 
           <form (ngSubmit)="saveEdit()" class="space-y-4">

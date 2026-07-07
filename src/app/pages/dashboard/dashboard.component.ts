@@ -21,19 +21,19 @@ import { InteractionType } from '../../core/models/interaction.model';
       @if (data(); as d) {
       <!-- Cards -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="relative rounded-lg border border-border bg-white p-5 shadow-sm">
+        <div class="relative rounded-xl border border-border bg-white p-5 shadow-md">
           <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Total Captado</p>
           <p class="mt-2 text-2xl font-bold text-primary">{{ formatBRL(d.totalCaptado) }}</p>
           <span class="absolute right-4 top-4 text-2xl">💰</span>
         </div>
 
-        <div class="relative rounded-lg border border-border bg-white p-5 shadow-sm">
+        <div class="relative rounded-xl border border-border bg-white p-5 shadow-md">
           <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Investidores Ativos</p>
           <p class="mt-2 text-2xl font-bold text-ink">{{ d.totalInvestidores }}</p>
           <span class="absolute right-4 top-4 text-2xl">👥</span>
         </div>
 
-        <div class="relative rounded-lg border border-border bg-white p-5 shadow-sm">
+        <div class="relative rounded-xl border border-border bg-white p-5 shadow-md">
           <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Retornos Pendentes</p>
           <p class="mt-2 text-2xl font-bold text-ink">{{ d.retornosPendentes.count }}</p>
           <p class="text-sm text-gray-500">{{ formatBRL(d.retornosPendentes.valor) }}</p>
@@ -41,7 +41,7 @@ import { InteractionType } from '../../core/models/interaction.model';
         </div>
 
         <div
-          class="relative rounded-lg border border-border bg-white p-5 shadow-sm"
+          class="relative rounded-xl border border-border bg-white p-5 shadow-md"
           [class.ring-1]="d.retornosAtrasados.count > 0"
           [class.ring-red-200]="d.retornosAtrasados.count > 0"
         >
@@ -68,7 +68,7 @@ import { InteractionType } from '../../core/models/interaction.model';
       <section class="mt-8">
         <h2 class="mb-3 text-lg font-semibold text-primary">Últimas Interações</h2>
 
-        <div class="rounded-lg border border-border bg-white shadow-sm">
+        <div class="rounded-xl border border-border bg-white shadow-md">
           @if (d.ultimasInteracoes.length === 0) {
             <p class="p-5 text-sm text-gray-500">Nenhuma interação registrada</p>
           } @else {

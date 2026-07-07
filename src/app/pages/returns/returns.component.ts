@@ -40,17 +40,17 @@ interface PaymentForm {
 
     <!-- Cards de resumo -->
     <div class="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <div class="rounded-lg border border-border bg-white p-4 shadow-sm">
+      <div class="rounded-xl border border-border bg-white p-4 shadow-md">
         <p class="text-xs font-medium uppercase tracking-wide text-muted">Total Pendente</p>
         <p class="mt-1 text-xl font-bold text-ink">{{ formatBRL(totalPendente()) }}</p>
       </div>
-      <div class="rounded-lg border border-border bg-white p-4 shadow-sm">
+      <div class="rounded-xl border border-border bg-white p-4 shadow-md">
         <p class="text-xs font-medium uppercase tracking-wide text-muted">Total Atrasado</p>
         <p class="mt-1 text-xl font-bold" [class.text-red-600]="totalAtrasado() > 0" [class.text-ink]="totalAtrasado() === 0">
           {{ formatBRL(totalAtrasado()) }}
         </p>
       </div>
-      <div class="rounded-lg border border-border bg-white p-4 shadow-sm">
+      <div class="rounded-xl border border-border bg-white p-4 shadow-md">
         <p class="text-xs font-medium uppercase tracking-wide text-muted">Total Pago</p>
         <p class="mt-1 text-xl font-bold text-primary">{{ formatBRL(totalPago()) }}</p>
       </div>
@@ -71,7 +71,7 @@ interface PaymentForm {
     </div>
 
     <!-- Tabela -->
-    <div class="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+    <div class="overflow-hidden rounded-xl border border-border bg-white shadow-md">
       @if (loading()) {
         <p class="p-5 text-sm text-muted">Carregando...</p>
       } @else if (error()) {
@@ -125,7 +125,7 @@ interface PaymentForm {
     <!-- Modal: Novo Retorno -->
     @if (createOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closeCreate()">
-        <div class="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
           <h2 class="mb-4 text-lg font-semibold text-ink">Novo Retorno</h2>
 
           <form (ngSubmit)="saveCreate()" class="space-y-4">
@@ -196,7 +196,7 @@ interface PaymentForm {
     <!-- Modal: Marcar como Pago -->
     @if (paying(); as ret) {
       <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="closePayment()">
-        <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+        <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
           <h2 class="mb-1 text-lg font-semibold text-ink">Marcar como Pago</h2>
           <p class="mb-4 text-sm text-muted">
             {{ investorNameByInvestment(ret.investmentId) }} — esperado {{ formatBRL(ret.expectedAmount) }}
