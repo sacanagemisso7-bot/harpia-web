@@ -1,34 +1,60 @@
-export type PersonType = 'PF' | 'PJ';
+import { Document } from './document.model';
+import { Interaction } from './interaction.model';
+import { Investment } from './investment.model';
+
+export type PersonType = 'FISICA' | 'JURIDICA';
 
 export type PersonRoleType =
-  | 'INVESTIDOR'
+  | 'LEAD'
   | 'CLIENTE'
-  | 'SOCIO'
   | 'CORRETOR'
+  | 'FUNCIONARIO'
   | 'FORNECEDOR'
-  | 'CONTATO';
+  | 'PARCEIRO'
+  | 'INVESTIDOR';
 
-export type PersonDocumentType = 'CPF' | 'CNPJ' | 'RG' | 'PASSAPORTE' | 'OUTRO';
+export type PersonDocumentType = 'CPF' | 'CNPJ';
 
 export interface PersonRole {
   id: string;
-  type: PersonRoleType;
+  role: PersonRoleType;
   personId: string;
+  organizationId: string;
   createdAt: string;
-  updatedAt: string;
 }
 
 export interface Person {
   id: string;
   name: string;
-  type: PersonType;
+  personType: PersonType;
   documentType?: PersonDocumentType;
   document?: string;
   email?: string;
   phone?: string;
+  address?: string;
   notes?: string;
   roles: PersonRole[];
   organizationId: string;
   createdAt: string;
   updatedAt: string;
+}
+
+/** Payload de criação (POST /people) — papéis vão como array de strings. */
+export interface CreatePersonInput {
+  name: string;
+  personType: PersonType;
+  documentType?: PersonDocumentType;
+  document?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
+  roles?: PersonRoleType[];
+}
+
+/** Resposta de GET /people/:id — inclui relações. */
+export interface PersonDetail extends Person {
+  investments: Investment[];
+  interactions: Interaction[];
+  documents: Document[];
 }
