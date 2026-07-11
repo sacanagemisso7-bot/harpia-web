@@ -7,7 +7,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [LucideAngularModule],
   template: `
-    <header class="flex items-center justify-end gap-4 bg-white border-b border-border px-6 py-3">
+    <header class="flex items-center justify-end gap-4 bg-card border-b border-border px-6 py-3">
       <div class="flex items-center gap-3">
         <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
           A
@@ -17,7 +17,7 @@ import { AuthService } from '../../../core/services/auth.service';
       <button
         type="button"
         (click)="logout()"
-        class="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface transition-colors"
+        class="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface-warm transition-colors"
       >
         <lucide-icon [img]="LogOutIcon" [size]="16"></lucide-icon>
         Sair

@@ -1,3 +1,5 @@
 # Progresso — Frontend Harpia
 
+- **2026-07-11 — Ajuste de paleta: fundos quentes off-white com sombra nos cards:** troca do branco frio por tons quentes (`surface #FAF9F6`, `surface-warm #F7F4EC`, `card #FCFBF7`, `border #E8E4D8`) e nova `shadow-card` levemente esverdeada; sidebar/header/login agora usam `bg-card`, fundo em `bg-surface`, hovers em `surface-warm`. Verde-floresta mantido como acento.
+
 - **2026-07-11 — Frontend: fundação reconstruída:** removida a arquitetura antiga (investidores/projetos/aportes) preservando infra (Angular 18, Tailwind verde-floresta, Lucide, auth, currency-mask, login). Nova navegação centralizada em `core/config/navigation.config.ts` (grupos Comercial, Empreendimentos, Investidores, Cadastros) renderizada pela sidebar; rotas placeholder protegidas por `authGuard` para dashboard/people/interactions/developments/investments/returns/companies/bank-accounts; novos models da arquitetura de incorporadora (Person+papéis, Company/SPE, BankAccount, Development, Unit, UnitType, PriceTable, Investment, Allocation, Return, Interaction, Document, Dashboard).

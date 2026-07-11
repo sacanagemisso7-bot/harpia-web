@@ -19,7 +19,7 @@ import { NAVIGATION } from '../../../core/config/navigation.config';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, LucideAngularModule],
   template: `
-    <aside class="flex h-screen w-64 flex-col border-r border-border bg-white">
+    <aside class="flex h-screen w-64 flex-col border-r border-border bg-card">
       <!-- Logo -->
       <div class="flex items-center gap-2.5 px-6 py-6">
         <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
@@ -42,7 +42,7 @@ import { NAVIGATION } from '../../../core/config/navigation.config';
                 <a
                   [routerLink]="item.route"
                   routerLinkActive="bg-primary/10 text-primary border-primary"
-                  class="flex items-center gap-3 rounded-r px-4 py-2.5 text-sm font-medium text-muted hover:bg-surface transition-colors border-l-2 border-transparent"
+                  class="flex items-center gap-3 rounded-r px-4 py-2.5 text-sm font-medium text-muted hover:bg-surface-warm transition-colors border-l-2 border-transparent"
                 >
                   <lucide-icon [img]="iconOf(item.icon)" [size]="18"></lucide-icon>
                   <span>{{ item.label }}</span>
