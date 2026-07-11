@@ -9,7 +9,7 @@ import { map } from 'rxjs';
   template: `
     <div class="flex flex-col items-start">
       <h1 class="text-2xl font-bold text-ink">{{ title() }}</h1>
-      <p class="mt-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+      <p class="mt-2 rounded-md bg-surface-warm px-2.5 py-1 text-sm text-muted">
         em construção
       </p>
     </div>

@@ -41,7 +41,7 @@ import { NAVIGATION } from '../../../core/config/navigation.config';
               @for (item of group.items; track item.route) {
                 <a
                   [routerLink]="item.route"
-                  routerLinkActive="bg-primary/10 text-primary border-primary"
+                  routerLinkActive="bg-gold-light text-gold-dark border-gold"
                   class="flex items-center gap-3 rounded-r px-4 py-2.5 text-sm font-medium text-muted hover:bg-surface-warm transition-colors border-l-2 border-transparent"
                 >
                   <lucide-icon [img]="iconOf(item.icon)" [size]="18"></lucide-icon>
