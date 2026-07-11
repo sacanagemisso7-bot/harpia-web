@@ -1,0 +1,3 @@
+# Progresso — Frontend Harpia
+
+- **2026-07-11 — Frontend: fundação reconstruída:** removida a arquitetura antiga (investidores/projetos/aportes) preservando infra (Angular 18, Tailwind verde-floresta, Lucide, auth, currency-mask, login). Nova navegação centralizada em `core/config/navigation.config.ts` (grupos Comercial, Empreendimentos, Investidores, Cadastros) renderizada pela sidebar; rotas placeholder protegidas por `authGuard` para dashboard/people/interactions/developments/investments/returns/companies/bank-accounts; novos models da arquitetura de incorporadora (Person+papéis, Company/SPE, BankAccount, Development, Unit, UnitType, PriceTable, Investment, Allocation, Return, Interaction, Document, Dashboard).

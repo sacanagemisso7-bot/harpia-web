@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   Building2,
+  Coins,
+  Landmark,
   LayoutDashboard,
   LucideAngularModule,
   LucideIconData,
@@ -10,12 +12,7 @@ import {
   Users,
   Wallet,
 } from 'lucide-angular';
-
-interface NavItem {
-  label: string;
-  path: string;
-  icon: LucideIconData;
-}
+import { NAVIGATION } from '../../../core/config/navigation.config';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,16 +29,27 @@ interface NavItem {
       </div>
 
       <!-- Navegação -->
-      <nav class="flex-1 px-3 py-2 space-y-1">
-        @for (item of navItems; track item.path) {
-          <a
-            [routerLink]="item.path"
-            routerLinkActive="bg-primary/10 text-primary border-primary"
-            class="flex items-center gap-3 rounded-r px-4 py-2.5 text-sm font-medium text-muted hover:bg-surface transition-colors border-l-2 border-transparent"
-          >
-            <lucide-icon [img]="item.icon" [size]="18"></lucide-icon>
-            <span>{{ item.label }}</span>
-          </a>
+      <nav class="flex-1 overflow-y-auto px-3 py-2">
+        @for (group of navigation; track group.label) {
+          <div class="mb-4">
+            @if (group.label) {
+              <p class="px-4 pb-1 text-xs font-semibold uppercase tracking-wider text-muted">
+                {{ group.label }}
+              </p>
+            }
+            <div class="space-y-1">
+              @for (item of group.items; track item.route) {
+                <a
+                  [routerLink]="item.route"
+                  routerLinkActive="bg-primary/10 text-primary border-primary"
+                  class="flex items-center gap-3 rounded-r px-4 py-2.5 text-sm font-medium text-muted hover:bg-surface transition-colors border-l-2 border-transparent"
+                >
+                  <lucide-icon [img]="iconOf(item.icon)" [size]="18"></lucide-icon>
+                  <span>{{ item.label }}</span>
+                </a>
+              }
+            </div>
+          </div>
         }
       </nav>
 
@@ -59,12 +67,20 @@ interface NavItem {
   `,
 })
 export class SidebarComponent {
-  readonly navItems: NavItem[] = [
-    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { label: 'Investidores', path: '/investors', icon: Users },
-    { label: 'Projetos', path: '/projects', icon: Building2 },
-    { label: 'Aportes', path: '/investments', icon: Wallet },
-    { label: 'Retornos', path: '/returns', icon: TrendingUp },
-    { label: 'Interações', path: '/interactions', icon: MessageSquare },
-  ];
+  readonly navigation = NAVIGATION;
+
+  private readonly icons: Record<string, LucideIconData> = {
+    LayoutDashboard,
+    Users,
+    MessageSquare,
+    Building2,
+    TrendingUp,
+    Coins,
+    Landmark,
+    Wallet,
+  };
+
+  iconOf(name: string): LucideIconData {
+    return this.icons[name] ?? LayoutDashboard;
+  }
 }

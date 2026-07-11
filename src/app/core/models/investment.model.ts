@@ -7,7 +7,8 @@ export interface Investment {
   type: InvestmentType;
   notes?: string;
   investorId: string;
-  projectId: string;
+  developmentId?: string;
+  companyId?: string;
   organizationId: string;
   createdAt: string;
   updatedAt: string;

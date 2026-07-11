@@ -1,4 +1,10 @@
-export type InteractionType = 'REUNIAO' | 'LIGACAO' | 'WHATSAPP' | 'EMAIL' | 'OUTRO';
+export type InteractionType =
+  | 'REUNIAO'
+  | 'LIGACAO'
+  | 'WHATSAPP'
+  | 'EMAIL'
+  | 'VISITA'
+  | 'OUTRO';
 
 export interface Interaction {
   id: string;
@@ -6,9 +12,9 @@ export interface Interaction {
   type: InteractionType;
   summary: string;
   nextStep?: string;
-  investorId: string;
+  personId: string;
   organizationId: string;
   createdAt: string;
   updatedAt: string;
-  investor?: { id: string; name: string };
+  person?: { id: string; name: string };
 }
